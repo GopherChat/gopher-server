@@ -1,0 +1,13 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+*.test
+*.out
+
+.idea/
+.vscode/
+vendor/
+Godeps/
