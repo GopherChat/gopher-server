@@ -1,4 +1,4 @@
-package klog
+package glog
 
 import (
 	"os"

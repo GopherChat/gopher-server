@@ -2,7 +2,7 @@ package sqlstore
 
 import (
 	"github.com/GopherChat/gopher-server/model"
-	"github.com/GopherChat/gopher-server/module/klog"
+	"github.com/GopherChat/gopher-server/module/glog"
 	"github.com/GopherChat/gopher-server/store"
 	"xorm.io/xorm"
 )
@@ -23,11 +23,11 @@ type collection struct {
 
 type SqlStore struct {
 	engine *xorm.Engine
-	logger *klog.Logger
+	logger *glog.Logger
 	coll   collection
 }
 
-func NewSqlStore(l *klog.Logger) *SqlStore {
+func NewSqlStore(l *glog.Logger) *SqlStore {
 	sqlStore := &SqlStore{
 		logger: l,
 	}
@@ -44,31 +44,31 @@ func (ss *SqlStore) User() store.UserStore {
 }
 
 // func (ss *SqlStore) initConnection() {
-// 	klog.Info("Beginning SQL engine initialization.")
+// 	glog.Info("Beginning SQL engine initialization.")
 
 // 	reties := ss.cfg.ConnectRetries
 // 	backOff := ss.cfg.ConnectBackoff * time.Second
 
 // 	for i := 0; i < reties; i++ {
-// 		klog.Info(fmt.Sprintf("SQL engine initialization attempt #%d/%d...", i+1, reties))
+// 		glog.Info(fmt.Sprintf("SQL engine initialization attempt #%d/%d...", i+1, reties))
 
 // 		e, err := xorm.NewEngine("mysql", fmt.Sprintf("%s:%s@%s", ss.cfg.User, ss.cfg.Password, ss.cfg.DSN))
 // 		if err != nil {
-// 			klog.Error(fmt.Sprintf("SQL engine initialization attempt #%d/%d failed", i+1, reties), err)
+// 			glog.Error(fmt.Sprintf("SQL engine initialization attempt #%d/%d failed", i+1, reties), err)
 // 			if i == reties-1 {
-// 				klog.Error("SQL engine connection retries ended", err)
+// 				glog.Error("SQL engine connection retries ended", err)
 // 				os.Exit(1)
 // 			}
 // 		} else {
 // 			if err := e.Sync2(tables...); err != nil {
-// 				klog.Error("SQL engine auto migration failed", err)
+// 				glog.Error("SQL engine auto migration failed", err)
 // 				os.Exit(1)
 // 			}
 // 			ss.engine = e
 // 			return
 // 		}
 
-// 		klog.Info(fmt.Sprintf("Backing off for %d seconds", backOff))
+// 		glog.Info(fmt.Sprintf("Backing off for %d seconds", backOff))
 // 		time.Sleep(backOff)
 // 	}
 // }

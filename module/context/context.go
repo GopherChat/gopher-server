@@ -3,7 +3,7 @@ package context
 import (
 	"github.com/GopherChat/gopher-server/app"
 	"github.com/GopherChat/gopher-server/model"
-	"github.com/GopherChat/gopher-server/module/klog"
+	"github.com/GopherChat/gopher-server/module/glog"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,7 +13,7 @@ type Context struct {
 	*fiber.Ctx
 
 	app    app.App
-	logger *klog.Logger
+	logger *glog.Logger
 
 	IsSigned bool
 	User     *model.User
@@ -24,7 +24,7 @@ func FromRequest(c *fiber.Ctx) *Context {
 	return ctx
 }
 
-func Contexter(a app.App, l *klog.Logger) fiber.Handler {
+func Contexter(a app.App, l *glog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		ctx := &Context{
 			Ctx:    c,
