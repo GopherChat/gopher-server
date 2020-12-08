@@ -6,7 +6,7 @@ import (
 )
 
 type collection struct {
-	*user.User
+	user *user.User
 }
 
 type App struct {
@@ -16,11 +16,11 @@ type App struct {
 func New() *App {
 	a := &App{}
 
-	a.coll.User = user.New()
+	a.coll.user = user.New()
 
 	return a
 }
 
 func (a *App) User() app.User {
-	return a.coll.User
+	return a.coll.user
 }
