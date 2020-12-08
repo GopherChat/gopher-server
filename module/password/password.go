@@ -61,6 +61,8 @@ func (pg Generator) Generate(raw string) (string, error) {
 	switch pg.algo {
 	case argon2id:
 		p, err = hashWithArgon2id(raw)
+	case bcrypt:
+		p, err = hashWithBcrypt(raw)
 	default:
 		err = fmt.Errorf("invalid password algorithm")
 	}

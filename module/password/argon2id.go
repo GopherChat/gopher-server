@@ -14,7 +14,8 @@ import (
 var (
 	errInvalidHash         = errors.New("the encoded hash is not in the correct format")
 	errIncompatibleVersion = errors.New("incompatible version of argon2")
-	defaultArgonParams     = &params{
+	defaultArgonParams     = argon2Params{
+		version:     argon2.Version,
 		memory:      64 * 1024,
 		iterations:  1,
 		parallelism: 2,
@@ -23,7 +24,8 @@ var (
 	}
 )
 
-type params struct {
+type argon2Params struct {
+	version     int
 	memory      uint32
 	iterations  uint32
 	parallelism uint8
@@ -31,7 +33,7 @@ type params struct {
 	keyLength   uint32
 }
 
-func hashWithArgon2id(raw string, params ...*params) (password, error) {
+func hashWithArgon2id(raw string, params ...argon2Params) (password, error) {
 	p := defaultArgonParams
 	if len(params) > 0 {
 		p = params[0]
@@ -43,14 +45,10 @@ func hashWithArgon2id(raw string, params ...*params) (password, error) {
 	}
 
 	hash := argon2.IDKey([]byte(raw), salt, p.iterations, p.memory, p.parallelism, p.keyLength)
-
 	pswd := password{
 		Algo: argon2id,
 		Value: map[string]interface{}{
-			"v": argon2.Version,
-			"m": p.memory,
-			"t": p.iterations,
-			"p": p.parallelism,
+			"p": p,
 			"s": salt,
 			"h": hash,
 		},
@@ -76,7 +74,7 @@ func MustComparePasswordAndArgon2idHash(password, encodedHash string) bool {
 	return match
 }
 
-func decodeArgon2idHash(encodedHash string) (p *params, salt, hash []byte, err error) {
+func decodeArgon2idHash(encodedHash string) (p *argon2Params, salt, hash []byte, err error) {
 	vals := strings.Split(encodedHash, "$")
 	if len(vals) != 6 {
 		return nil, nil, nil, errInvalidHash
@@ -91,7 +89,7 @@ func decodeArgon2idHash(encodedHash string) (p *params, salt, hash []byte, err e
 		return nil, nil, nil, errIncompatibleVersion
 	}
 
-	p = &params{}
+	p = &argon2Params{}
 	_, err = fmt.Sscanf(vals[3], "m=%d,t=%d,p=%d", &p.memory, &p.iterations, &p.parallelism)
 	if err != nil {
 		return nil, nil, nil, err
